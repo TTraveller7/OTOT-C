@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports: 
+      - "5000:5432"
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: "dev"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "dev", "--username=postgres", "-p", "5432"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  blacklist-cache:
+    image: "redis:7.0.4-alpine"
+    ports: 
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
